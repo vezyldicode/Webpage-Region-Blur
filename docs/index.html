@@ -1,230 +1,320 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-
   <title>Webpage Region Blur Bookmarklet</title>
 
   <style>
     :root {
-      color-scheme: light;
-      --bg: #f6f7fb;
-      --card: #ffffff;
-      --text: #15171a;
-      --muted: #6b7280;
-      --border: #e5e7eb;
+      --bg: #f9f9f8;
+      --surface: #ffffff;
+      --surface-2: #f4f4f2;
+      --text: #111110;
+      --text-muted: #6f6f6b;
+      --text-faint: #a8a8a3;
+      --border: rgba(0,0,0,0.08);
+      --border-strong: rgba(0,0,0,0.14);
       --accent: #2563eb;
-      --accent-dark: #1d4ed8;
-      --code: #f3f4f6;
+      --accent-hover: #1d4ed8;
+      --accent-subtle: #eff6ff;
+      --accent-text: #1e40af;
+      --radius-sm: 8px;
+      --radius-md: 14px;
+      --radius-lg: 20px;
+      --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 8px 24px rgba(0,0,0,0.06);
     }
 
-    * {
-      box-sizing: border-box;
+    [data-theme="dark"] {
+      --bg: #111110;
+      --surface: #1c1c1a;
+      --surface-2: #242422;
+      --text: #f0efec;
+      --text-muted: #9b9b96;
+      --text-faint: #5a5a56;
+      --border: rgba(255,255,255,0.08);
+      --border-strong: rgba(255,255,255,0.13);
+      --accent: #3b82f6;
+      --accent-hover: #60a5fa;
+      --accent-subtle: rgba(59,130,246,0.12);
+      --accent-text: #93c5fd;
+      --shadow: 0 1px 3px rgba(0,0,0,0.3), 0 8px 24px rgba(0,0,0,0.3);
     }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
-      margin: 0;
-      min-height: 100vh;
-      font-family:
-        system-ui,
-        -apple-system,
-        BlinkMacSystemFont,
-        "Segoe UI",
-        sans-serif;
-      background:
-        radial-gradient(circle at top, #e0ecff 0, transparent 36rem),
-        var(--bg);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg);
       color: var(--text);
+      min-height: 100vh;
+      transition: background 0.2s, color 0.2s;
     }
 
+    /* ── Top bar ─────────────────────────────── */
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      display: flex;
+      justify-content: flex-end;
+      padding: 14px 24px;
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+      transition: background 0.2s;
+    }
+
+    .theme-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 7px 14px;
+      border: 1px solid var(--border-strong);
+      border-radius: 99px;
+      background: var(--surface);
+      color: var(--text-muted);
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.15s;
+      user-select: none;
+    }
+
+    .theme-toggle:hover { color: var(--text); border-color: var(--accent); }
+
+    .theme-toggle svg { width: 15px; height: 15px; flex-shrink: 0; }
+
+    /* ── Layout ──────────────────────────────── */
     main {
-      width: min(920px, calc(100% - 32px));
+      width: min(740px, calc(100% - 40px));
       margin: 0 auto;
-      padding: 64px 0;
+      padding: 56px 0 80px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
     }
 
+    /* ── Hero ────────────────────────────────── */
     .hero {
       text-align: center;
-      padding: 56px 24px;
-      background: rgba(255, 255, 255, 0.78);
+      padding: 56px 32px 48px;
+      background: var(--surface);
       border: 1px solid var(--border);
-      border-radius: 28px;
-      box-shadow: 0 24px 80px rgba(15, 23, 42, 0.08);
-      backdrop-filter: blur(16px);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow);
     }
 
     h1 {
-      margin: 0 0 16px;
-      font-size: clamp(40px, 7vw, 72px);
-      line-height: 0.95;
-      letter-spacing: -0.06em;
+      font-size: clamp(32px, 6vw, 58px);
+      font-weight: 700;
+      letter-spacing: -0.04em;
+      line-height: 1.05;
+      margin-bottom: 14px;
     }
 
     .subtitle {
-      max-width: 640px;
-      margin: 0 auto 32px;
-      color: var(--muted);
-      font-size: 20px;
-      line-height: 1.55;
+      max-width: 520px;
+      margin: 0 auto 36px;
+      color: var(--text-muted);
+      font-size: 16px;
+      line-height: 1.6;
     }
 
     .install-button {
       display: inline-flex;
       align-items: center;
-      justify-content: center;
-      min-height: 56px;
-      padding: 0 28px;
-      border-radius: 999px;
+      gap: 8px;
+      height: 48px;
+      padding: 0 24px;
+      border-radius: 99px;
       background: var(--accent);
-      color: white;
-      font-size: 18px;
-      font-weight: 700;
+      color: #fff;
+      font-size: 15px;
+      font-weight: 600;
       text-decoration: none;
-      box-shadow: 0 16px 30px rgba(37, 99, 235, 0.28);
       cursor: grab;
       user-select: none;
+      transition: background 0.15s, transform 0.1s;
     }
 
-    .install-button:hover {
-      background: var(--accent-dark);
-    }
+    .install-button:hover { background: var(--accent-hover); }
+    .install-button:active { transform: scale(0.97); }
+
+    .install-button svg { width: 16px; height: 16px; opacity: 0.8; }
 
     .hint {
-      margin-top: 14px;
-      color: var(--muted);
-      font-size: 14px;
+      margin-top: 12px;
+      color: var(--text-faint);
+      font-size: 13px;
     }
 
+    /* ── Cards ───────────────────────────────── */
     section {
-      margin-top: 28px;
-      padding: 28px;
-      background: var(--card);
+      padding: 28px 32px;
+      background: var(--surface);
       border: 1px solid var(--border);
-      border-radius: 24px;
+      border-radius: var(--radius-lg);
     }
 
     h2 {
-      margin: 0 0 16px;
-      font-size: 26px;
-      letter-spacing: -0.03em;
+      font-size: 17px;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      margin-bottom: 20px;
+      color: var(--text);
     }
 
+    /* ── Steps ───────────────────────────────── */
     .steps {
-      display: grid;
-      gap: 12px;
-      padding: 0;
-      margin: 0;
       list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
     }
 
     .steps li {
-      display: grid;
-      grid-template-columns: 36px 1fr;
-      gap: 12px;
-      align-items: start;
-      color: var(--muted);
-      line-height: 1.5;
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      color: var(--text-muted);
+      font-size: 15px;
+      line-height: 1.55;
     }
 
     .number {
-      display: inline-grid;
-      place-items: center;
-      width: 36px;
-      height: 36px;
+      flex-shrink: 0;
+      width: 28px;
+      height: 28px;
       border-radius: 50%;
-      background: #eff6ff;
-      color: var(--accent);
-      font-weight: 800;
+      background: var(--accent-subtle);
+      color: var(--accent-text);
+      font-size: 12px;
+      font-weight: 700;
+      display: grid;
+      place-items: center;
     }
 
+    /* ── Features grid ───────────────────────── */
     .features {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 14px;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 10px;
     }
 
     .feature {
-      padding: 18px;
+      padding: 16px;
+      background: var(--surface-2);
       border: 1px solid var(--border);
-      border-radius: 18px;
-      background: #fafafa;
+      border-radius: var(--radius-md);
     }
 
     .feature strong {
       display: block;
-      margin-bottom: 6px;
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 5px;
+      color: var(--text);
     }
 
     .feature span {
-      color: var(--muted);
-      line-height: 1.45;
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.5;
     }
 
-    code {
-      padding: 3px 6px;
-      border-radius: 8px;
-      background: var(--code);
-      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-      font-size: 0.92em;
-    }
-
+    /* ── Manual install ──────────────────────── */
     .manual-box {
-      display: grid;
+      display: flex;
+      flex-direction: column;
       gap: 12px;
+    }
+
+    .manual-box p {
+      font-size: 14px;
+      color: var(--text-muted);
+      line-height: 1.55;
     }
 
     textarea {
       width: 100%;
-      min-height: 120px;
+      min-height: 100px;
       resize: vertical;
-      padding: 14px;
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      background: #fafafa;
+      padding: 12px 14px;
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius-sm);
+      background: var(--surface-2);
+      color: var(--text);
       font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-      font-size: 13px;
-      line-height: 1.45;
+      font-size: 12px;
+      line-height: 1.5;
+      transition: border-color 0.15s;
+      outline: none;
     }
+
+    textarea:focus { border-color: var(--accent); }
 
     button {
       width: fit-content;
-      border: 0;
-      border-radius: 999px;
-      padding: 12px 18px;
-      background: #111827;
-      color: white;
-      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 9px 18px;
+      border: 1px solid var(--border-strong);
+      border-radius: 99px;
+      background: var(--surface);
+      color: var(--text);
+      font-size: 13px;
+      font-weight: 600;
       cursor: pointer;
+      transition: all 0.15s;
     }
 
-    button:disabled {
-      opacity: 0.55;
-      cursor: not-allowed;
-    }
+    button:hover { border-color: var(--accent); color: var(--accent); }
+    button:disabled { opacity: 0.4; cursor: not-allowed; }
 
     .status {
-      color: var(--muted);
-      font-size: 14px;
+      color: var(--text-faint);
+      font-size: 13px;
+      min-height: 18px;
     }
 
+    code {
+      padding: 2px 7px;
+      border-radius: 5px;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 0.88em;
+      color: var(--text);
+    }
+
+    /* ── Footer ──────────────────────────────── */
     footer {
-      padding: 32px 0 0;
+      padding-top: 24px;
       text-align: center;
-      color: var(--muted);
-      font-size: 14px;
+      color: var(--text-faint);
+      font-size: 13px;
     }
   </style>
 </head>
 
 <body>
+  <div class="topbar">
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+      <svg id="themeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>
+      </svg>
+      <span id="themeLabel">Light</span>
+    </button>
+  </div>
+
   <main>
     <div class="hero">
       <h1>Webpage Region Blur</h1>
 
       <p class="subtitle">
         Blur any part of a webpage with one bookmark.
-        Useful for screenshots, screen sharing, tutorials, and hiding private information.
+        Useful for screenshots, screen sharing, and hiding private information.
       </p>
 
       <a
@@ -234,12 +324,11 @@
         title="Region Blur by Vezyl"
         draggable="true"
       >
-        Drag me to your bookmarks bar
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16l-7-3.5L5 21V5z"/></svg>
+        Drag to bookmarks bar
       </a>
 
-      <p class="hint">
-        Drag the button above to your bookmarks bar. Then click it on any webpage.
-      </p>
+      <p class="hint">Drag the button to your browser's bookmarks bar. Click it on any page to start blurring.</p>
     </div>
 
     <section>
@@ -253,7 +342,7 @@
 
         <li>
           <span class="number">2</span>
-          <span>Drag the blue <strong>Region Blur</strong> button to the bookmarks bar.</span>
+          <span>Drag the <strong>Drag to bookmarks bar</strong> button above into it.</span>
         </li>
 
         <li>
@@ -278,13 +367,13 @@
         </div>
 
         <div class="feature">
-          <strong>Multiple blur boxes</strong>
+          <strong>Multiple boxes</strong>
           <span>Click the bookmark again to create another blur area.</span>
         </div>
 
         <div class="feature">
           <strong>No extension</strong>
-          <span>It is only a bookmark. No account, no permissions, no tracking.</span>
+          <span>Just a bookmark. No account, no permissions, no tracking.</span>
         </div>
       </div>
     </section>
@@ -299,7 +388,10 @@
 
         <textarea id="bookmarkletCode" readonly></textarea>
 
-        <button id="copyButton" type="button">Copy bookmarklet code</button>
+        <button id="copyButton" type="button" disabled>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          Copy bookmarklet code
+        </button>
 
         <div id="copyStatus" class="status"></div>
       </div>
@@ -338,7 +430,7 @@
 
   <script>
     const BOOKMARK_NAME = "Region Blur by Vezyl";
-    const BUTTON_TEXT = "Drag me to your bookmarks bar";
+    const BUTTON_TEXT_READY = "Drag to bookmarks bar";
 
     const installButton = document.getElementById("installButton");
     const bookmarkletTextarea = document.getElementById("bookmarkletCode");
@@ -347,10 +439,9 @@
 
     let bookmarkletCode = "";
 
-    installButton.textContent = "Loading bookmarklet...";
+    installButton.textContent = "Loading…";
     installButton.title = BOOKMARK_NAME;
     installButton.removeAttribute("href");
-    copyButton.disabled = true;
 
     const escapeHtml = (value) =>
       value
@@ -362,21 +453,17 @@
 
     fetch("./bookmarklet.txt", { cache: "no-store" })
       .then((response) => {
-        if (!response.ok) {
-          throw new Error("Cannot load bookmarklet.txt");
-        }
-
+        if (!response.ok) throw new Error("Cannot load bookmarklet.txt");
         return response.text();
       })
       .then((text) => {
         bookmarkletCode = text.trim();
 
-        if (!bookmarkletCode.startsWith("javascript:")) {
+        if (!bookmarkletCode.startsWith("javascript:"))
           throw new Error("Invalid bookmarklet format");
-        }
 
         installButton.href = bookmarkletCode;
-        installButton.textContent = BUTTON_TEXT;
+        installButton.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16l-7-3.5L5 21V5z"/></svg> ${BUTTON_TEXT_READY}`;
         installButton.title = BOOKMARK_NAME;
         installButton.setAttribute("aria-label", BOOKMARK_NAME);
 
@@ -390,14 +477,9 @@
       });
 
     installButton.addEventListener("dragstart", (event) => {
-      if (!bookmarkletCode) {
-        event.preventDefault();
-        return;
-      }
+      if (!bookmarkletCode) { event.preventDefault(); return; }
 
-      const bookmarkHtml =
-        `<a href="${escapeHtml(bookmarkletCode)}">${escapeHtml(BOOKMARK_NAME)}</a>`;
-
+      const bookmarkHtml = `<a href="${escapeHtml(bookmarkletCode)}">${escapeHtml(BOOKMARK_NAME)}</a>`;
       event.dataTransfer.setData("text/uri-list", bookmarkletCode);
       event.dataTransfer.setData("text/plain", bookmarkletCode);
       event.dataTransfer.setData("text/html", bookmarkHtml);
@@ -405,9 +487,7 @@
     });
 
     copyButton.addEventListener("click", async () => {
-      if (!bookmarkletCode) {
-        return;
-      }
+      if (!bookmarkletCode) return;
 
       try {
         await navigator.clipboard.writeText(bookmarkletCode);
@@ -417,6 +497,35 @@
         document.execCommand("copy");
         copyStatus.textContent = "Copied.";
       }
+    });
+
+    /* ── Theme toggle ────────────────────────── */
+    const html = document.documentElement;
+    const themeToggle = document.getElementById("themeToggle");
+    const themeLabel = document.getElementById("themeLabel");
+    const themeIcon = document.getElementById("themeIcon");
+
+    const SUN_PATH = `<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>`;
+    const MOON_PATH = `<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>`;
+
+    const savedTheme = localStorage.getItem("blur-theme");
+    if (savedTheme === "dark") applyTheme("dark");
+
+    function applyTheme(theme) {
+      html.setAttribute("data-theme", theme);
+      if (theme === "dark") {
+        themeLabel.textContent = "Dark";
+        themeIcon.innerHTML = MOON_PATH;
+      } else {
+        themeLabel.textContent = "Light";
+        themeIcon.innerHTML = SUN_PATH;
+      }
+    }
+
+    themeToggle.addEventListener("click", () => {
+      const next = html.getAttribute("data-theme") === "dark" ? "light" : "dark";
+      applyTheme(next);
+      localStorage.setItem("blur-theme", next);
     });
   </script>
 </body>
