@@ -216,8 +216,18 @@ Possible future improvements:
 * Save box position and size
 * Add keyboard shortcuts
 * Add custom blur color
-* Add export/import settings
 * Add a browser extension version
+
+---
+
+## Author
+
+Created by **Tuan Viet**.
+
+* GitHub: [@vezyldicode](https://github.com/vezyldicode/)
+* Project: Webpage Region Blur
+
+If you find this project useful, consider giving it a star on GitHub.
 
 ---
 
