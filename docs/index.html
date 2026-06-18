@@ -480,8 +480,12 @@
       if (!bookmarkletCode) { event.preventDefault(); return; }
 
       const bookmarkHtml = `<a href="${escapeHtml(bookmarkletCode)}">${escapeHtml(BOOKMARK_NAME)}</a>`;
-      event.dataTransfer.setData("text/uri-list", bookmarkletCode);
-      event.dataTransfer.setData("text/plain", bookmarkletCode);
+      // text/x-moz-url: Firefox uses "URL\nTitle" format for bookmark name
+      event.dataTransfer.setData("text/x-moz-url", `${bookmarkletCode}\n${BOOKMARK_NAME}`);
+      // text/uri-list with name comment: some browsers read the # title line
+      event.dataTransfer.setData("text/uri-list", `# ${BOOKMARK_NAME}\n${bookmarkletCode}`);
+      // text/plain set to name (not URL) so Chrome uses it as the bookmark title
+      event.dataTransfer.setData("text/plain", BOOKMARK_NAME);
       event.dataTransfer.setData("text/html", bookmarkHtml);
       event.dataTransfer.effectAllowed = "copyLink";
     });
