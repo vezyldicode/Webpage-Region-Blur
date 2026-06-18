@@ -53,7 +53,7 @@ No tracking.
 ### Option 1: Easy install
 
 1. Open the install page:
-   `https://YOUR_USERNAME.github.io/region-blur-bookmarklet/`
+   `https://vezyldicode.github.io/Webpage-Region-Blur/`
 
 2. Drag the **Region Blur** button to your browser bookmarks bar.
 

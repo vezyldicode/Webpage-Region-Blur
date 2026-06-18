@@ -198,6 +198,11 @@
       cursor: pointer;
     }
 
+    button:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+    }
+
     .status {
       color: var(--muted);
       font-size: 14px;
@@ -222,7 +227,13 @@
         Useful for screenshots, screen sharing, tutorials, and hiding private information.
       </p>
 
-      <a id="installButton" class="install-button" href="#">
+      <a
+        id="installButton"
+        class="install-button"
+        href="#"
+        title="Region Blur by Vezyl"
+        draggable="true"
+      >
         Drag me to your bookmarks bar
       </a>
 
@@ -242,7 +253,7 @@
 
         <li>
           <span class="number">2</span>
-          <span>Drag the blue <strong>Region Blur</strong> button to the bookmarks bar.</span>
+          <span>Drag the blue <strong>Region Blur by Vezyl</strong> button to the bookmarks bar.</span>
         </li>
 
         <li>
@@ -325,7 +336,10 @@
     </footer>
   </main>
 
-    <script>
+  <script>
+    const BOOKMARK_NAME = "Region Blur by Vezyl";
+    const BUTTON_TEXT = "Drag me to your bookmarks bar";
+
     const installButton = document.getElementById("installButton");
     const bookmarkletTextarea = document.getElementById("bookmarkletCode");
     const copyButton = document.getElementById("copyButton");
@@ -334,49 +348,76 @@
     let bookmarkletCode = "";
 
     installButton.textContent = "Loading bookmarklet...";
+    installButton.title = BOOKMARK_NAME;
     installButton.removeAttribute("href");
     copyButton.disabled = true;
 
+    const escapeHtml = (value) =>
+      value
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+
     fetch("./bookmarklet.txt", { cache: "no-store" })
-        .then((response) => {
+      .then((response) => {
         if (!response.ok) {
-            throw new Error("Cannot load bookmarklet.txt");
+          throw new Error("Cannot load bookmarklet.txt");
         }
 
         return response.text();
-        })
-        .then((text) => {
+      })
+      .then((text) => {
         bookmarkletCode = text.trim();
 
         if (!bookmarkletCode.startsWith("javascript:")) {
-            throw new Error("Invalid bookmarklet format");
+          throw new Error("Invalid bookmarklet format");
         }
 
         installButton.href = bookmarkletCode;
-        installButton.textContent = "Drag me to your bookmarks bar";
+        installButton.textContent = BUTTON_TEXT;
+        installButton.title = BOOKMARK_NAME;
+        installButton.setAttribute("aria-label", BOOKMARK_NAME);
+
         bookmarkletTextarea.value = bookmarkletCode;
         copyButton.disabled = false;
-        })
-        .catch((error) => {
+      })
+      .catch((error) => {
         installButton.textContent = "Failed to load bookmarklet";
         bookmarkletTextarea.value = error.message;
         copyStatus.textContent = "Build the project again with: npm run build";
-        });
+      });
+
+    installButton.addEventListener("dragstart", (event) => {
+      if (!bookmarkletCode) {
+        event.preventDefault();
+        return;
+      }
+
+      const bookmarkHtml =
+        `<a href="${escapeHtml(bookmarkletCode)}">${escapeHtml(BOOKMARK_NAME)}</a>`;
+
+      event.dataTransfer.setData("text/uri-list", bookmarkletCode);
+      event.dataTransfer.setData("text/plain", bookmarkletCode);
+      event.dataTransfer.setData("text/html", bookmarkHtml);
+      event.dataTransfer.effectAllowed = "copyLink";
+    });
 
     copyButton.addEventListener("click", async () => {
-        if (!bookmarkletCode) {
+      if (!bookmarkletCode) {
         return;
-        }
+      }
 
-        try {
+      try {
         await navigator.clipboard.writeText(bookmarkletCode);
         copyStatus.textContent = "Copied.";
-        } catch {
+      } catch {
         bookmarkletTextarea.select();
         document.execCommand("copy");
         copyStatus.textContent = "Copied.";
-        }
+      }
     });
-    </script>
+  </script>
 </body>
 </html>
