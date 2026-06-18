@@ -9,7 +9,7 @@ Blur any part of a webpage with one simple bookmark.
 </p>
 
 <p align="center">
-  <a href="https://YOUR_USERNAME.github.io/region-blur-bookmarklet/">Install</a>
+  <a href="https://vezyldicode.github.io/Webpage-Region-Blur/">Install</a>
   ·
   <a href="#how-to-use">How to use</a>
   ·
