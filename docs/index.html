@@ -1,0 +1,382 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+
+  <title>Webpage Region Blur Bookmarklet</title>
+
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f6f7fb;
+      --card: #ffffff;
+      --text: #15171a;
+      --muted: #6b7280;
+      --border: #e5e7eb;
+      --accent: #2563eb;
+      --accent-dark: #1d4ed8;
+      --code: #f3f4f6;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family:
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+      background:
+        radial-gradient(circle at top, #e0ecff 0, transparent 36rem),
+        var(--bg);
+      color: var(--text);
+    }
+
+    main {
+      width: min(920px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 64px 0;
+    }
+
+    .hero {
+      text-align: center;
+      padding: 56px 24px;
+      background: rgba(255, 255, 255, 0.78);
+      border: 1px solid var(--border);
+      border-radius: 28px;
+      box-shadow: 0 24px 80px rgba(15, 23, 42, 0.08);
+      backdrop-filter: blur(16px);
+    }
+
+    h1 {
+      margin: 0 0 16px;
+      font-size: clamp(40px, 7vw, 72px);
+      line-height: 0.95;
+      letter-spacing: -0.06em;
+    }
+
+    .subtitle {
+      max-width: 640px;
+      margin: 0 auto 32px;
+      color: var(--muted);
+      font-size: 20px;
+      line-height: 1.55;
+    }
+
+    .install-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 56px;
+      padding: 0 28px;
+      border-radius: 999px;
+      background: var(--accent);
+      color: white;
+      font-size: 18px;
+      font-weight: 700;
+      text-decoration: none;
+      box-shadow: 0 16px 30px rgba(37, 99, 235, 0.28);
+      cursor: grab;
+      user-select: none;
+    }
+
+    .install-button:hover {
+      background: var(--accent-dark);
+    }
+
+    .hint {
+      margin-top: 14px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    section {
+      margin-top: 28px;
+      padding: 28px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+    }
+
+    h2 {
+      margin: 0 0 16px;
+      font-size: 26px;
+      letter-spacing: -0.03em;
+    }
+
+    .steps {
+      display: grid;
+      gap: 12px;
+      padding: 0;
+      margin: 0;
+      list-style: none;
+    }
+
+    .steps li {
+      display: grid;
+      grid-template-columns: 36px 1fr;
+      gap: 12px;
+      align-items: start;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .number {
+      display: inline-grid;
+      place-items: center;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: #eff6ff;
+      color: var(--accent);
+      font-weight: 800;
+    }
+
+    .features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 14px;
+    }
+
+    .feature {
+      padding: 18px;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      background: #fafafa;
+    }
+
+    .feature strong {
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    .feature span {
+      color: var(--muted);
+      line-height: 1.45;
+    }
+
+    code {
+      padding: 3px 6px;
+      border-radius: 8px;
+      background: var(--code);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 0.92em;
+    }
+
+    .manual-box {
+      display: grid;
+      gap: 12px;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 120px;
+      resize: vertical;
+      padding: 14px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: #fafafa;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    button {
+      width: fit-content;
+      border: 0;
+      border-radius: 999px;
+      padding: 12px 18px;
+      background: #111827;
+      color: white;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .status {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    footer {
+      padding: 32px 0 0;
+      text-align: center;
+      color: var(--muted);
+      font-size: 14px;
+    }
+  </style>
+</head>
+
+<body>
+  <main>
+    <div class="hero">
+      <h1>Webpage Region Blur</h1>
+
+      <p class="subtitle">
+        Blur any part of a webpage with one bookmark.
+        Useful for screenshots, screen sharing, tutorials, and hiding private information.
+      </p>
+
+      <a id="installButton" class="install-button" href="#">
+        Drag me to your bookmarks bar
+      </a>
+
+      <p class="hint">
+        Drag the button above to your bookmarks bar. Then click it on any webpage.
+      </p>
+    </div>
+
+    <section>
+      <h2>Install in 3 steps</h2>
+
+      <ol class="steps">
+        <li>
+          <span class="number">1</span>
+          <span>Show your browser bookmarks bar.</span>
+        </li>
+
+        <li>
+          <span class="number">2</span>
+          <span>Drag the blue <strong>Region Blur</strong> button to the bookmarks bar.</span>
+        </li>
+
+        <li>
+          <span class="number">3</span>
+          <span>Open any webpage and click the bookmark.</span>
+        </li>
+      </ol>
+    </section>
+
+    <section>
+      <h2>What you can do</h2>
+
+      <div class="features">
+        <div class="feature">
+          <strong>Blur private data</strong>
+          <span>Cover names, emails, balances, addresses, messages, and IDs.</span>
+        </div>
+
+        <div class="feature">
+          <strong>Move and resize</strong>
+          <span>Drag the blur box anywhere and resize it from the corners.</span>
+        </div>
+
+        <div class="feature">
+          <strong>Multiple blur boxes</strong>
+          <span>Click the bookmark again to create another blur area.</span>
+        </div>
+
+        <div class="feature">
+          <strong>No extension</strong>
+          <span>It is only a bookmark. No account, no permissions, no tracking.</span>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>Manual install</h2>
+
+      <div class="manual-box">
+        <p>
+          If drag-and-drop does not work, copy this code and paste it into the URL field of a new bookmark.
+        </p>
+
+        <textarea id="bookmarkletCode" readonly></textarea>
+
+        <button id="copyButton" type="button">Copy bookmarklet code</button>
+
+        <div id="copyStatus" class="status"></div>
+      </div>
+    </section>
+
+    <section>
+      <h2>How to use</h2>
+
+      <ol class="steps">
+        <li>
+          <span class="number">1</span>
+          <span>Click the bookmark to create a blur box.</span>
+        </li>
+
+        <li>
+          <span class="number">2</span>
+          <span>Drag the box to move it.</span>
+        </li>
+
+        <li>
+          <span class="number">3</span>
+          <span>Drag a corner to resize it.</span>
+        </li>
+
+        <li>
+          <span class="number">4</span>
+          <span>Hold <code>Alt</code> and scroll to change blur strength.</span>
+        </li>
+      </ol>
+    </section>
+
+    <footer>
+      Region Blur Bookmarklet · Runs locally in your browser
+    </footer>
+  </main>
+
+    <script>
+    const installButton = document.getElementById("installButton");
+    const bookmarkletTextarea = document.getElementById("bookmarkletCode");
+    const copyButton = document.getElementById("copyButton");
+    const copyStatus = document.getElementById("copyStatus");
+
+    let bookmarkletCode = "";
+
+    installButton.textContent = "Loading bookmarklet...";
+    installButton.removeAttribute("href");
+    copyButton.disabled = true;
+
+    fetch("./bookmarklet.txt", { cache: "no-store" })
+        .then((response) => {
+        if (!response.ok) {
+            throw new Error("Cannot load bookmarklet.txt");
+        }
+
+        return response.text();
+        })
+        .then((text) => {
+        bookmarkletCode = text.trim();
+
+        if (!bookmarkletCode.startsWith("javascript:")) {
+            throw new Error("Invalid bookmarklet format");
+        }
+
+        installButton.href = bookmarkletCode;
+        installButton.textContent = "Drag me to your bookmarks bar";
+        bookmarkletTextarea.value = bookmarkletCode;
+        copyButton.disabled = false;
+        })
+        .catch((error) => {
+        installButton.textContent = "Failed to load bookmarklet";
+        bookmarkletTextarea.value = error.message;
+        copyStatus.textContent = "Build the project again with: npm run build";
+        });
+
+    copyButton.addEventListener("click", async () => {
+        if (!bookmarkletCode) {
+        return;
+        }
+
+        try {
+        await navigator.clipboard.writeText(bookmarkletCode);
+        copyStatus.textContent = "Copied.";
+        } catch {
+        bookmarkletTextarea.select();
+        document.execCommand("copy");
+        copyStatus.textContent = "Copied.";
+        }
+    });
+    </script>
+</body>
+</html>
